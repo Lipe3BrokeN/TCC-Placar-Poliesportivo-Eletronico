@@ -1,5 +1,6 @@
+//AVISO!!!! Nem todo código é de nossa autoria
 //Biblioteca para habilitar a comunicação SERIAL
-
+//Essa parte até a linha 86 é coisa do Davi, deve ser pra comunicação.
 #ifndef _BL
 #define BLUETOOTH_SERIAL_H
 
@@ -84,8 +85,9 @@ class BluetoothSerial: public Stream
 #endif
 
 //Cria uma instância de BluetoothSerial chamado SerialBT
+//Fim da parte do Davi
 
-
+//Declaramos as saídas do timer e uma variável de tempo T.
 int A = 19;
 int B = 18;
 int C = 5;
@@ -98,6 +100,7 @@ int D2 = 21;
 int D3 = 2;
 int D4 = 15;
 int T = 1;
+//Criamos as funções dos números de 0 a 9 para o timer.
 void Zero() {
   digitalWrite(A, 0);
   digitalWrite(B, 0);
@@ -188,6 +191,7 @@ void Nove() {
   digitalWrite(F, 0);
   digitalWrite(G, 0);
 }
+// Criamos a escolha do digito a ser escrito no timer.
 void P1() {
   digitalWrite(D1, HIGH);
   digitalWrite(D2, LOW);
@@ -212,7 +216,8 @@ void P4() {
   digitalWrite(D3, LOW);
   digitalWrite(D4, HIGH);
 }
-int escrever(int valor) {
+//Essa é a principal função, serve para escrever o valor no timer de acordo com o número recebido.
+int escrever(int valor) { 
   int unidade = valor % 10;
   int dezena = (valor / 10) % 10;
   int centena = (valor / 100) % 10;
@@ -357,13 +362,13 @@ int escrever(int valor) {
   }
 }
 void setup() {
-
+  //Coisa do Davi
   //Inicia uma comunicação SERIAL com uma taxa de transmissão de 115200
   Serial.begin(115200);
   //Iniacia o dispositivo SERIAL Bluetooth com o argumento o nome do dispositivo
   SerialBT.begin("ESP32test");
   Serial.println("O dispositivo foi iniciado, agora você pode emparelhá-lo com bluetooth!");
-
+  //Define os pinos como saída.
   pinMode(A, OUTPUT);
   pinMode(B, OUTPUT);
   pinMode(C, OUTPUT);
@@ -378,6 +383,7 @@ void setup() {
 
 }
 void loop() {
+  //Coisa do Davi
   //Verifica se algo foi recebido pela porta SERIAL
   //Se sim envie os dados recebidos via Bluetooth ao dispositivo conectado
   if (Serial.available())
@@ -391,11 +397,11 @@ void loop() {
     Serial.write(SerialBT.read());
     delay(20);
   }
-
-  int R = digitalRead(23);
+  //Aqui temos a função que conta 
+  int R = digitalRead(23); //Lê o pino 23 para descidir se a contagem é crescente ou decrescente, é so para testes.
   if (R == 0) {
     for (int i = 0; i < 6000; i++) {
-      escrever(i);
+      escrever(i); //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 4 * T em ms
       if ( (i / 10) % 10 == 5 and i % 10 == 9) {
         i = i + 41;
         escrever(i);
@@ -404,11 +410,11 @@ void loop() {
   }
   else if (R == 1) {
     for (int i = 6000; i > 0; i--) {
-      escrever(i);
+      escrever(i); //Mesmo loop so que decrescente
       if ( (i / 10) % 10 == 0 and i % 10 == 0) {
         i = i - 41;
         escrever(i);
       }
     }
   }
-}UETOOTH_SERIAL_H_
+}BUETOOTH_SERIAL_H_ // Coisa do Davi
