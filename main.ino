@@ -1,12 +1,9 @@
-//AVISO!!!! Nem todo código é de nossa autoria
-//Biblioteca para habilitar a comunicação SERIAL
-//Essa parte até a linha 86 é coisa do Davi, deve ser pra comunicação.
-#ifndef _BL
+/* #ifndef _BL
 #define BLUETOOTH_SERIAL_H
 
 
 
-#if defined(CONFIG_BT_ENABLED) && defined(CONFIG_BLUEDROID_ENABLED)
+#if defined(CONFIG_BT_ENABLED) && defined(CONFIG_BLUEZDROID_ENABLED)
 
 #include "Arduino.h"
 #include "Stream.h"
@@ -83,7 +80,7 @@ class BluetoothSerial: public Stream
 #endif
 
 #endif
-
+*/
 //Cria uma instância de BluetoothSerial chamado SerialBT
 //Fim da parte do Davi
 
@@ -298,7 +295,7 @@ int escrever(int valor) {
         Zero();
         break;
       case 1:
-        Um();
+Um();
         break;
       case 2:
         Dois();
@@ -362,12 +359,11 @@ int escrever(int valor) {
   }
 }
 void setup() {
-  //Coisa do Davi
+ /* //Coisa do Davi
   //Inicia uma comunicação SERIAL com uma taxa de transmissão de 115200
   Serial.begin(115200);
   //Iniacia o dispositivo SERIAL Bluetooth com o argumento o nome do dispositivo
-  SerialBT.begin("ESP32test");
-  Serial.println("O dispositivo foi iniciado, agora você pode emparelhá-lo com bluetooth!");
+  */
   //Define os pinos como saída.
   pinMode(A, OUTPUT);
   pinMode(B, OUTPUT);
@@ -383,7 +379,7 @@ void setup() {
 
 }
 void loop() {
-  //Coisa do Davi
+/*  //Coisa do Davi
   //Verifica se algo foi recebido pela porta SERIAL
   //Se sim envie os dados recebidos via Bluetooth ao dispositivo conectado
   if (Serial.available())
@@ -397,6 +393,7 @@ void loop() {
     Serial.write(SerialBT.read());
     delay(20);
   }
+*/
   //Aqui temos a função que conta 
   int R = digitalRead(23); //Lê o pino 23 para descidir se a contagem é crescente ou decrescente, é so para testes.
   if (R == 0) {
@@ -415,6 +412,6 @@ void loop() {
         i = i - 41;
         escrever(i);
       }
-    }
-  }
-}BUETOOTH_SERIAL_H_ // Coisa do Davi
+ }
+}
+}
