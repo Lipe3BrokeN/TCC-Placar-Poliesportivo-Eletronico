@@ -1,68 +1,12 @@
-/* #ifndef _BL
-#define BLUETOOTH_SERIAL_H
+#include "BluetoothSerial.h"
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+BluetoothSerial SerialBT;
+// Inicia o sistema de bluetooth
 
-
-
-#if defined(CONFIG_BT_ENABLED) && defined(CONFIG_BLUEZDROID_ENABLED)
-
-//#include "Arduino.h"
-//#include "Stream.h"
-//#include <esp_gap_bt_api.h>
-//#include <esp_spp_api.h>
-//#include <functional>
-//#include <map>
-//#include "BTScan.h"
-
-typedef std::function<void(const uint8_t *buffer, size_t size)> BluetoothSerialDataCb;
-typedef std::function<void(uint32_t num_val)> ConfirmRequestCb;
-typedef std::function<void(boolean success)> AuthCompleteCb;
-typedef std::function<void(BTAdvertisedDevice* pAdvertisedDevice)> BTAdvertisedDeviceCb;
-
-class BluetoothSerial: public Stream
-{
-  public:
-
-    BluetoothSerial(void);
-    ~BluetoothSerial(void);
-
-    bool begin(String localName = String(), bool isMaster = false);
-    bool begin(unsigned long baud) { //compatibility
-      return begin();
-    }
-    int available(void);
-    int peek(void);
-    bool hasClient(void);
-    int read(void);
-    size_t write(uint8_t c);
-    size_t write(const uint8_t *buffer, size_t size);
-    void flush();
-    void end(void);
-    void setTimeout(int timeoutMS);
-    void onData(BluetoothSerialDataCb cb);
-    esp_err_t register_callback(esp_spp_cb_t * callback);
-
-    void onConfirmRequest(ConfirmRequestCb cb);
-    void onAuthComplete(AuthCompleteCb cb);
-    void confirmReply(boolean confirm);
-
-    void enableSSP();
-    bool setPin(const char *pin);
-    bool connect(String remoteName);
-    bool connect(uint8_t remoteAddress[], int channel = 0, esp_spp_sec_t sec_mask = (ESP_SPP_SEC_ENCRYPT | ESP_SPP_SEC_AUTHENTICATE), esp_spp_role_t role = ESP_SPP_ROLE_MASTER);
-    bool connect(const BTAddress &remoteAddress, int channel = 0, esp_spp_sec_t sec_mask = (ESP_SPP_SEC_ENCRYPT | ESP_SPP_SEC_AUTHENTICATE), esp_spp_role_t role = ESP_SPP_ROLE_MASTER) {
-      return connect(*remoteAddress.getNative(), channel, sec_mask);
-    };
-    bool connect();
-    bool connected(int timeout = 0);
-    bool isClosed();
-    bool isReady(bool checkMaster = false, int timeout = 0);
-    bool disconnect();
-    bool unpairDevice(uint8_t remoteAddress[]);
-*/
-//Cria uma instância de BluetoothSerial chamado SerialBT
-//Fim da parte do Davi
-
-//Declaramos as saídas do timer e uma variável de tempo T.
+// Declaramos as saídas do timer, uma variável de tempo T e o pause despause.
+  char Pause, Despause;
   int A = 19;
   int B = 18;
   int C = 5;
@@ -75,7 +19,7 @@ class BluetoothSerial: public Stream
   int D3 = 2;
   int D4 = 15;
   int T = 1;
-//Criamos as funções dos números de 0 a 9 para o timer.
+// Criamos as funções dos números de 0 a 9 para o timer.
 void Zero() {
   digitalWrite(A, 0);
   digitalWrite(B, 0);
@@ -177,7 +121,7 @@ void P4() {
   digitalWrite(D2, LOW);
   digitalWrite(D3, LOW);
   digitalWrite(D4, HIGH);}
-//Essa é a principal função, serve para escrever o valor no timer de acordo com o número recebido.
+// Essa é a principal função, serve para escrever o valor no timer de acordo com o número recebido.
 int escrever(int valor) {
   int unidade = valor % 10;
   int dezena = (valor / 10) % 10; 
@@ -321,11 +265,8 @@ int escrever(int valor) {
       break;
   }}}
 void setup() {
- /* //Coisa do Davi
-  //Inicia uma comunicação SERIAL com uma taxa de transmissão de 115200
-  Serial.begin(115200);
-  //Iniacia o dispositivo SERIAL Bluetooth com o argumento o nome do dispositivo
-  */
+  Serial.begin(921600); // Velocidade de upload.
+  SerialBT.begin("Placar Eletronico"); // Nome do Placar.
   //Define os pinos como saída.
   pinMode(A, OUTPUT);
   pinMode(B, OUTPUT);
@@ -338,44 +279,37 @@ void setup() {
   pinMode(D2, OUTPUT);
   pinMode(D3, OUTPUT);
   pinMode(D4, OUTPUT);
-
 }
 void loop() {
-/*  //Coisa do Davi
-  //Verifica se algo foi recebido pela porta SERIAL
-  //Se sim envie os dados recebidos via Bluetooth ao dispositivo conectado
-  if (Serial.available())
-  {
-    SerialBT.write(Serial.read());
-  }
-  //Verifica se há algo na porta SERIAL Bluetooth
-  //Se sim envia os dados para o monitor SERIAL
-  if (SerialBT.available())
-  {
-    Serial.write(SerialBT.read());
-    delay(20);
-  }
-*/
-  //Aqui temos a função que conta 
-  int R = digitalRead(23); //Lê o pino 23 para descidir se a contagem é crescente ou decrescente, é so para testes.
-  if (R == 0) {
-    for (int i = 0; i < 6000; i++) {
-      while (digitalRead(13) == 1){escrever(i);}
-      escrever(i); //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 4 * T em ms
+ if (SerialBT.available()) { // So inicia o timer com o Bluetooth funcionando
+  char Ordem =(char)SerialBT.read(); // Lê o que foi digitado para determinar a ordem, 0 para decrescente e 1 para crescente.
+  if (Ordem == '1'){  // Aqui temos a função que conta.
+    SerialBT.println("Para pausar digite 1"); // Mensagem no celular.
+    SerialBT.println("Para despausar digite 0");
+    for (int i = 0; i < 6000; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 4 * T em ms
+      Pause =(char)SerialBT.read();
+      while (Pause == '1'){
+        escrever(i); // Função de pause.
+        Despause =(char)SerialBT.read();
+        if (Despause == '0'){
+          break;}}
+      escrever(i);
       if ( (i / 10) % 10 == 5 and i % 10 == 9) {
         i = i + 41;
         escrever(i);
-      }
-    }
-  }
-  else if (R == 1) {
-    for (int i = 6000; i > 0; i--) {
-      while (digitalRead(13) == 1){escrever(i);}
-      escrever(i); //Mesmo loop so que decrescente
+      }}}
+  if (Ordem == '0');{
+    SerialBT.println("Para pausar digite 1");
+    SerialBT.println("Para despausar digite 0");
+    for (int i = 6000; i > 0; i--) { //Mesmo loop so que decrescente
+      Pause =(char)SerialBT.read();
+      while (Pause == '1'){
+        escrever(i);
+        Despause =(char)SerialBT.read();
+        if (Despause == '0'){
+          break;}}
+      escrever(i);
       if ( (i / 10) % 10 == 0 and i % 10 == 0) {
         i = i - 41;
         escrever(i);
-      }
- }
-}
-}
+      }}}}}
