@@ -1,15 +1,15 @@
   int pontos = 0;
-  int A = 19;
-  int B = 18;
-  int C = 5;
-  int D = 17;
-  int E = 16;
-  int F = 4;
-  int G = 0;
-  int D1 = 22;
-  int D2 = 21;
-  int D3 = 2;
-  int D4 = 15;
+  int A = 32;
+  int B = 33;
+  int C = 25;
+  int D = 26;
+  int E = 27;
+  int F = 14;
+  int G = 12;
+  int D1 = 1;
+  int D2 = 3;
+  int D3 = 23;
+  int D4 = 13;
   int T = 1;
 //Criamos as funções dos números de 0 a 9 para o timer.
 void Zero() {
