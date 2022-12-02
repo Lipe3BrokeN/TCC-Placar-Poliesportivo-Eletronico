@@ -14,22 +14,15 @@ BluetoothSerial SerialBT;
   int E = 16;
   int F = 4;
   int G = 0;
-  int D10 = 22;
-  int D20 = 21;
-  int D30 = 2;
-  int D40 = 15;
-  int A2 = 32;
-  int B2 = 33;
-  int C2 = 25;
-  int D2 = 26;
-  int E2 = 27;
-  int F2 = 14;
-  int G2 = 12;
-  int D12 = 1;
-  int D22 = 3;
-  int D32 = 23; 
-  int D42 = 13; // A,B,D10,... Timer
-  int T = 1;  // A2,B2,D12,... Placar
+  int D1 = 22;
+  int D2 = 21;
+  int D3 = 2;
+  int D4 = 15;
+  int D5 = 25;
+  int D6 = 26;
+  int D7 = 27;
+  int D8 = 14;
+  int T = 1;  
   int Pontos = 0;
 // Criamos as funções dos números de 0 a 9 para o timer.
 // Criamos a escolha do digito a ser escrito no timer.
@@ -45,21 +38,14 @@ void setup() {
   pinMode(E, OUTPUT);
   pinMode(F, OUTPUT);
   pinMode(G, OUTPUT);
-  pinMode(D10, OUTPUT);
-  pinMode(D20, OUTPUT);
-  pinMode(D30, OUTPUT);
-  pinMode(D40, OUTPUT);
-  pinMode(A2, OUTPUT);
-  pinMode(B2, OUTPUT);
-  pinMode(C2, OUTPUT);
+  pinMode(D1, OUTPUT);
   pinMode(D2, OUTPUT);
-  pinMode(E2, OUTPUT);
-  pinMode(F2, OUTPUT);
-  pinMode(G2, OUTPUT);
-  pinMode(D12, OUTPUT);
-  pinMode(D22, OUTPUT);
-  pinMode(D32, OUTPUT);
-  pinMode(D42, OUTPUT);
+  pinMode(D3, OUTPUT);
+  pinMode(D4, OUTPUT);
+  pinMode(D5, OUTPUT);
+  pinMode(D6, OUTPUT);
+  pinMode(D7, OUTPUT);
+  pinMode(D8, OUTPUT);
 }
 void loop() {
  if (SerialBT.available()) { // So inicia o timer com o Bluetooth funcionando
@@ -70,33 +56,34 @@ void loop() {
     for (int i = 0; i < 6000; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 4 * T em ms
       Pause =(char)SerialBT.read();
       while (Pause == '1'){
-        Timer(i, Pontos);
-        Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+        Placar(i, Pontos);
+        Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
         Despause =(char)SerialBT.read();
         if (Despause == '0'){
           break;}}
-      Timer(i, Pontos);
-      Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+      Placar(i, Pontos);
+      Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
       if ( (i / 10) % 10 == 5 and i % 10 == 9) {
         i = i + 41;
-        Timer(i, Pontos);
-        Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
-      }}}
-  if (Ordem == '0');{
+        Placar(i, Pontos);
+        Pontos = Pontos + VerificarPontos();} // REMOVER DEPOIS, SOMENTE TESTES
+        Pause =(char)SerialBT.read();
+      }}
+  if (Ordem == '0'){
     SerialBT.println("Para pausar digite 1");
     SerialBT.println("Para despausar digite 0");
     for (int i = 6000; i > 0; i--) { //Mesmo loop so que decrescente
-      Pause =(char)SerialBT.read();
       while (Pause == '1'){
-        Timer(i, Pontos);
-        Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+        Placar(i, Pontos);
+        Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
         Despause =(char)SerialBT.read();
         if (Despause == '0'){
           break;}}
-      Timer(i, Pontos);
-      Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+      Placar(i, Pontos);
+      Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
       if ( (i / 10) % 10 == 0 and i % 10 == 0) {
         i = i - 41;
-        Timer(i, Pontos);
-        Pontos = Pontos + AdicionarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
-      }}}}}
+        Placar(i, Pontos);
+        Pontos = Pontos + VerificarPontos();} // REMOVER DEPOIS, SOMENTE TESTES
+      Pause =(char)SerialBT.read();
+      }}}}
