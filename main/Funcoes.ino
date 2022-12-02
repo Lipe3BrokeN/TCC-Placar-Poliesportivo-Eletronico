@@ -280,25 +280,28 @@ int Placar(int tempo, int pontos) {
       Nove();
       break;
   }}}
-int AdicionarPontos(){ //Vou remover essa função é so pra testes!!!!
-  int ran = random(2);
-  int ponto = 0;
-  int ran2 = random(10);
-  if (ran2 == 1){
-    switch (ran){
-      case 1:
-        ponto = ponto + 100;
-      case 2:
-        ponto = ponto +1;
-  return ponto;
-  }}
-}
-int VerificarPontos(){
-  char seila = (char)SerialBT.read();
-  if(seila == 'A'){
+int VerificarPontos(char serial){
+  if(serial == 'A'){ //Verifica qual comando recebido para decidir qual time ganha ou perde pontos.
     return 1;}
-  if(seila == 'B'){
+  if(serial == 'B'){
     return 100;}
+  if(serial == 'C'){
+    return -1;}
+  if(serial == 'D'){
+    return -100;}
   else
     return 0;
   }
+int AtualizarPontos(int pontos, int NovosPontos){
+  if (pontos + NovosPontos >= 9999){//Verifica se algum time ultrapassa o limite de 99 pontos ou chega a um valor negativo, se sim reseta o placar do time ou não altera.
+    return pontos - 9900;
+  }
+  if ((pontos / 10) % 10 == 9 and pontos % 10 == 9){
+    return pontos - 99;
+  }
+  if (pontos + NovosPontos < 0 or ((pontos / 10) % 10 == 0 and pontos % 10 == 0) and NovosPontos == -1){
+    return pontos;
+  }
+  else
+    return pontos + NovosPontos;
+}

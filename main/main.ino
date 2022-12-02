@@ -6,8 +6,8 @@ BluetoothSerial SerialBT;
 // Inicia o sistema de bluetooth
 
 // Declaramos as saídas do timer, uma variável de tempo T e o pause despause.
-  char Pause, Despause;
-  int A = 19;
+  char Pause, Despause, serial; //Serial é o valor recebido pelo Bluetooth
+  int A = 19; //Segmentos e Displays
   int B = 18;
   int C = 5;
   int D = 17;
@@ -24,9 +24,6 @@ BluetoothSerial SerialBT;
   int D8 = 14;
   int T = 1;  
   int Pontos = 0;
-// Criamos as funções dos números de 0 a 9 para o timer.
-// Criamos a escolha do digito a ser escrito no timer.
-// Essa é a principal função, serve para escrever o valor no timer de acordo com o número recebido.
 void setup() {
   Serial.begin(921600); // Velocidade de upload.
   SerialBT.begin("Placar Eletronico"); // Nome do Placar.
@@ -50,40 +47,43 @@ void setup() {
 void loop() {
  if (SerialBT.available()) { // So inicia o timer com o Bluetooth funcionando
   char Ordem =(char)SerialBT.read(); // Lê o que foi digitado para determinar a ordem, 0 para decrescente e 1 para crescente.
-  if (Ordem == '1'){  // Aqui temos a função que conta.
-    SerialBT.println("Para pausar digite 1"); // Mensagem no celular.
+  if (Ordem == '1'){
+    SerialBT.println("Para pausar digite 1"); // Mensagem no terminal Bluetooth.
     SerialBT.println("Para despausar digite 0");
-    for (int i = 0; i < 6000; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 4 * T em ms
-      Pause =(char)SerialBT.read();
+    for (int i = 0; i < 6000; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 8 * T em ms
+      serial = (char)SerialBT.read();
+      Pause = serial;
       while (Pause == '1'){
         Placar(i, Pontos);
-        Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
-        Despause =(char)SerialBT.read();
-        if (Despause == '0'){
+        serial = (char)SerialBT.read();
+        Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));
+        Despause = serial;
+        if (Despause == '1'){
           break;}}
-      Placar(i, Pontos);
-      Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+      Placar(i, Pontos); //Atualiza os pontos e o tempo.
+      Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));  //Verefica se houve alguma mudança nos pontos.
       if ( (i / 10) % 10 == 5 and i % 10 == 9) {
         i = i + 41;
         Placar(i, Pontos);
-        Pontos = Pontos + VerificarPontos();} // REMOVER DEPOIS, SOMENTE TESTES
-        Pause =(char)SerialBT.read();
+        Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));}
       }}
   if (Ordem == '0'){
     SerialBT.println("Para pausar digite 1");
     SerialBT.println("Para despausar digite 0");
     for (int i = 6000; i > 0; i--) { //Mesmo loop so que decrescente
+      serial = (char)SerialBT.read();
+      Pause = serial;
       while (Pause == '1'){
         Placar(i, Pontos);
-        Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
-        Despause =(char)SerialBT.read();
-        if (Despause == '0'){
+        serial = (char)SerialBT.read();
+        Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));
+        Despause = serial;
+        if (Despause == '1'){
           break;}}
       Placar(i, Pontos);
-      Pontos = Pontos + VerificarPontos(); // REMOVER DEPOIS, SOMENTE TESTES
+      Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));
       if ( (i / 10) % 10 == 0 and i % 10 == 0) {
         i = i - 41;
         Placar(i, Pontos);
-        Pontos = Pontos + VerificarPontos();} // REMOVER DEPOIS, SOMENTE TESTES
-      Pause =(char)SerialBT.read();
+        Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));}
       }}}}
