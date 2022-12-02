@@ -294,10 +294,10 @@ int AdicionarPontos(){ //Vou remover essa função é so pra testes!!!!
   }}
 }
 int VerificarPontos(){
-  char seilaporra = (char)SerialBT.read();
-  if(seilaporra == 'A'){
+  char seila = (char)SerialBT.read();
+  if(seila == 'A'){
     return 1;}
-  if(seilaporra == 'B'){
+  if(seila == 'B'){
     return 100;}
   else
     return 0;
