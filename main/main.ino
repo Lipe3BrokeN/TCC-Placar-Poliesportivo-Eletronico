@@ -4,7 +4,12 @@
 #endif
 BluetoothSerial SerialBT;
 // Inicia o sistema de bluetooth
-
+void BemVindo(){
+  SerialBT.println("Bem-vindo ao placar!");
+  SerialBT.println("Este placar faz parte do Trabalho de Conclusão de Curso do curso de Tecnico em Eletronica da Etec Getulio Vargas");
+  SerialBT.println("Todo codigo usado na programacao desse placar esta disponivel em https://github.com/Lipe3BrokeN/TCC-Placar-Poliesportivo-Eletronico");
+  SerialBT.println("Caso queira um tempo personalizado, digite no terminal os quatro numeros que deseja e no final coloque 1 para crescente ou 0 para decrescente.");
+}
 // Declaramos as saídas do timer, uma variável de tempo T e o pause despause.
   char Pause, Despause, serial; //Serial é o valor recebido pelo Bluetooth
   int A = 19; //Segmentos e Displays
@@ -45,17 +50,22 @@ void setup() {
   pinMode(D8, OUTPUT);
 }
 void loop() {
+ Placar(2407, 2407);
  if (SerialBT.available()) { // So inicia o timer com o Bluetooth funcionando
-  char Ordem =(char)SerialBT.read(); // Lê o que foi digitado para determinar a ordem, 0 para decrescente e 1 para crescente.
-  if (Ordem == '1'){
-    SerialBT.println("Para pausar digite 1"); // Mensagem no terminal Bluetooth.
-    SerialBT.println("Para despausar digite 0");
-    for (int i = 0; i < 6000; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 8 * T em ms
+  BemVindo();
+  String Jogo = SerialBT.readString(); // Lê o que foi digitado para determinar a ordem, 0 para decrescente e 1 para crescente.
+  int Tempo = CalculaTempo(Jogo);
+  if (Jogo[4] == '1'){
+    for (int i = 0; i < Tempo; i++) { //Loop que conta de 0 até 6000, e retorna a 0. O delay é definido por 8 * T em ms
       serial = (char)SerialBT.read();
+      if (serial == 'E'){ i = 0;}
+      if (serial == 'G'){ESP.restart();}
       Pause = serial;
       while (Pause == '1'){
         Placar(i, Pontos);
         serial = (char)SerialBT.read();
+        if (serial == 'E'){ i = 0;}
+        if (serial == 'G'){ESP.restart();}
         Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));
         Despause = serial;
         if (Despause == '1'){
@@ -67,15 +77,17 @@ void loop() {
         Placar(i, Pontos);
         Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));}
       }}
-  if (Ordem == '0'){
-    SerialBT.println("Para pausar digite 1");
-    SerialBT.println("Para despausar digite 0");
-    for (int i = 6000; i > 0; i--) { //Mesmo loop so que decrescente
+  if (Jogo[4] == '0'){
+    for (int i = Tempo; i > 0; i--) { //Mesmo loop so que decrescente
       serial = (char)SerialBT.read();
+      if (serial == 'E'){ i = Tempo;}
+      if (serial == 'G'){ESP.restart();}
       Pause = serial;
       while (Pause == '1'){
         Placar(i, Pontos);
         serial = (char)SerialBT.read();
+        if (serial == 'E'){ i = Tempo;}
+        if (serial == 'G'){ESP.restart();}
         Pontos = AtualizarPontos(Pontos,VerificarPontos(serial));
         Despause = serial;
         if (Despause == '1'){

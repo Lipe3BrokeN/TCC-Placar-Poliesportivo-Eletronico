@@ -7,7 +7,7 @@ int Placar(int tempo, int pontos) {
   int dezenaP = (pontos / 10) % 10; 
   int centenaP = (pontos / 100) % 10;
   int milharP = (pontos / 1000) % 10; 
-  for(int i = 0; i < 15; i++) {
+  for(int i = 0; i < 5; i++) {
   delay(T);
   P5();
   switch (unidadeP) {
@@ -289,19 +289,31 @@ int VerificarPontos(char serial){
     return -1;}
   if(serial == 'D'){
     return -100;}
+  if(serial == 'F'){
+    return 2407;}
   else
     return 0;
   }
 int AtualizarPontos(int pontos, int NovosPontos){
-  if (pontos + NovosPontos >= 9999){//Verifica se algum time ultrapassa o limite de 99 pontos ou chega a um valor negativo, se sim reseta o placar do time ou não altera.
-    return pontos - 9900;
+  if (NovosPontos == 2407){
+    return 0;
   }
-  if ((pontos / 10) % 10 == 9 and pontos % 10 == 9){
+  if ((pontos / 10) % 10 == 9 and pontos % 10 == 9 and NovosPontos == 1){//Verifica se algum time ultrapassa o limite de 99 pontos ou chega a um valor negativo, se sim reseta o placar do time ou não altera.
     return pontos - 99;
+  }
+  if (pontos + NovosPontos >= 10000){
+    return pontos - 9900;
   }
   if (pontos + NovosPontos < 0 or ((pontos / 10) % 10 == 0 and pontos % 10 == 0) and NovosPontos == -1){
     return pontos;
   }
   else
     return pontos + NovosPontos;
+}
+int CalculaTempo(String Jogo){
+  int milhar = (Jogo[0] - '0') * 1000;
+  int centena = (Jogo[1] - '0') * 100;
+  int dezena = (Jogo[2] - '0') * 10;
+  int unidade = (Jogo[3] - '0');
+  return (milhar + centena + dezena + unidade);
 }
