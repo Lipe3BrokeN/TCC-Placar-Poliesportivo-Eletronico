@@ -1,15 +1,15 @@
-int Placar(int tempo, int pontos) {
-  int unidade = tempo % 10;
-  int dezena = (tempo / 10) % 10; 
+int Placar(int tempo, int pontos) { //Nesse arquivos temos as funções principais
+  int unidade = tempo % 10; //Esta função recebe o tempo e a quantidade de pontos e imprime nos displays
+  int dezena = (tempo / 10) % 10; //Calcula cada digito
   int centena = (tempo / 100) % 10;
   int milhar = (tempo / 1000) % 10; 
   int unidadeP = pontos % 10;
   int dezenaP = (pontos / 10) % 10; 
   int centenaP = (pontos / 100) % 10;
   int milharP = (pontos / 1000) % 10; 
-  for(int i = 0; i < 5; i++) {
+  for(int i = 0; i < 125; i++) {//125 Vezes pois há 8 delays T de 1ms, totalizando 1000ms ou 1 segundo.
   delay(T);
-  P5();
+  P5();//Chama todos os displays com seus valores
   switch (unidadeP) {
     case 0:
       Zero();
@@ -279,9 +279,10 @@ int Placar(int tempo, int pontos) {
     case 9:
       Nove();
       break;
-  }}}
-int VerificarPontos(char serial){
-  if(serial == 'A'){ //Verifica qual comando recebido para decidir qual time ganha ou perde pontos.
+  }}
+  P0();}
+int VerificarPontos(char serial){//Verifica qual comando recebido para decidir qual time ganha ou perde pontos.
+  if(serial == 'A'){ 
     return 1;}
   if(serial == 'B'){
     return 100;}
@@ -290,11 +291,11 @@ int VerificarPontos(char serial){
   if(serial == 'D'){
     return -100;}
   if(serial == 'F'){
-    return 2407;}
+    return 2407;}//Valor aleatorio para falar que é o usario deseja resetar a pontuação
   else
-    return 0;
+    return 0;//Caso não tenha nenhuma mudança, retorna 0
   }
-int AtualizarPontos(int pontos, int NovosPontos){
+int AtualizarPontos(int pontos, int NovosPontos){//Verefica se há necessidade de atualizar a pontuação.
   if (NovosPontos == 2407){
     return 0;
   }
@@ -310,7 +311,7 @@ int AtualizarPontos(int pontos, int NovosPontos){
   else
     return pontos + NovosPontos;
 }
-int CalculaTempo(String Jogo){
+int CalculaTempo(String Jogo){//Recebe a String lida no Bluetooth, e retorna o valor do tempo.
   int milhar = (Jogo[0] - '0') * 1000;
   int centena = (Jogo[1] - '0') * 100;
   int dezena = (Jogo[2] - '0') * 10;

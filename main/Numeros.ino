@@ -1,4 +1,4 @@
-void Zero() {
+void Zero() {//Nesse arquivo temos todos numeros de 0 a 9 e a função para chamar cada um dos 8 displays.
   digitalWrite(A, 0);
   digitalWrite(B, 0);
   digitalWrite(C, 0);
@@ -150,3 +150,12 @@ void P8() {
   digitalWrite(D6, LOW);
   digitalWrite(D7, LOW);
   digitalWrite(D8, HIGH);}
+void P0() {
+  digitalWrite(D1, LOW);
+  digitalWrite(D2, LOW);
+  digitalWrite(D3, LOW);
+  digitalWrite(D4, LOW);
+  digitalWrite(D5, LOW);
+  digitalWrite(D6, LOW);
+  digitalWrite(D7, LOW);
+  digitalWrite(D8, LOW);}
